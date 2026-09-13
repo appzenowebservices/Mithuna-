@@ -1,0 +1,61 @@
+# Rendered by the stock nginx entrypoint (envsubst) from
+# PAPERCLIP_UPSTREAM / HERMES_UPSTREAM (see docker-compose.yml).
+# Mirrors vite.config.js dev proxies for production:
+#   /api/*    -> paperclip  (path kept, e.g. /api/boards)
+#   /hermes/* -> hermes     (prefix stripped, e.g. /hermes/api/v1/live -> /api/v1/live)
+server {
+  listen 3000;
+  server_name _;
+  root /usr/share/nginx/html;
+  index index.html;
+
+  # Container healthcheck (no backend involved)
+  location = /healthz {
+    access_log off;
+    return 200 'ok';
+  }
+
+  # Paperclip REST API (plain HTTP, path preserved)
+  location /api/ {
+    proxy_pass http://${PAPERCLIP_UPSTREAM};
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+
+  # Hermes live WebSocket (+ HTTP fallback on the same path)
+  location /hermes/ {
+    proxy_pass http://${HERMES_UPSTREAM}/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 86400s;
+    proxy_send_timeout 86400s;
+  }
+
+  # Hashed build assets: immutable
+  location /assets/ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+  }
+
+  # Large binary assets copied verbatim from public/
+  location ~* \.(glb|gltf|exr|hdr|wasm|onnx)$ {
+    expires 7d;
+    add_header Cache-Control "public";
+  }
+
+  # SPA fallback: everything else serves the app shell
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+
+  gzip on;
+  gzip_types text/css application/javascript application/json image/svg+xml;
+  gzip_min_length 1024;
+}
