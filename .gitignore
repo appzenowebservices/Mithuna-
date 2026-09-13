@@ -90,3 +90,12 @@ temp/
 
 # Generated voice runtime assets (vendored from node_modules by scripts/copy-voice-assets.mjs)
 public/vad/
+
+# Local Paperclip backend data dumps (regenerated at runtime, not source)
+agents.json
+goals.json
+heartbeat.json
+issues.json
+projects.json
+teams.json
+opencode-sessions.md
