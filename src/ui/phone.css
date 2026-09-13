@@ -1,0 +1,236 @@
+/* ============================================================
+   Mithuna Engine — phone frame / mobile controls
+   Bold glass + bento language (Design-Guide.md). Colors come only
+   from the :root tokens in simhud.css — never raw hex here.
+   ============================================================ */
+
+/* ---------------- Backdrop ---------------- */
+
+.phone-backdrop {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(242, 176, 90, 0.14), transparent 60%),
+    radial-gradient(900px 500px at 50% 115%, rgba(255, 233, 168, 0.1), transparent 60%),
+    linear-gradient(180deg, var(--background) 0%, var(--chrome-mid) 55%, var(--background) 100%);
+  font-family: ui-monospace, "Cascadia Code", "Segoe UI", monospace;
+}
+
+/* ---------------- Phone ---------------- */
+
+.phone {
+  position: relative;
+  width: min(400px, 94vw);
+  aspect-ratio: 9 / 19;
+  max-height: 94vh;
+  padding: 10px;
+  border-radius: 46px;
+  background: linear-gradient(160deg, var(--chrome-top) 0%, var(--chrome-mid) 45%, var(--chrome-bot) 100%);
+  border: 1px solid rgba(255, 233, 168, 0.25);
+  box-shadow:
+    0 0 0 2px var(--chrome-rim),
+    0 0 0 3px rgba(255, 233, 168, 0.12),
+    0 30px 80px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 233, 168, 0.08);
+}
+
+.phone-notch {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 24px;
+  border-radius: 14px;
+  background: var(--chrome-rim);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-speaker {
+  width: 42px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--chrome-top);
+}
+
+.phone-home {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 233, 168, 0.3);
+  z-index: 5;
+}
+
+/* ---------------- Screen ---------------- */
+
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 36px;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.phone-screen > div:first-child {
+  width: 100%;
+  height: 100%;
+}
+
+/* Phone-scoped HUD placement (overrides shared defaults) */
+.phone-screen .hud-status {
+  top: 34px;
+}
+
+.phone-screen .hud-stats {
+  top: 70px;
+}
+
+.phone-screen .corner.tl,
+.phone-screen .corner.tr {
+  top: 90px;
+}
+
+.phone-screen .corner.bl,
+.phone-screen .corner.br {
+  bottom: 74px;
+}
+
+.phone-screen .hud-boot {
+  bottom: 22px;
+}
+
+/* ---------------- Company switcher (phone) ---------------- */
+
+.phone-company {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  max-width: 92%;
+}
+
+.phone-company .cs-label {
+  display: none;
+}
+
+.phone-company .cs-select {
+  max-width: 160px;
+  font-size: 10px;
+}
+
+/* ---------------- Joystick ---------------- */
+
+.joy-base {
+  position: absolute;
+  bottom: 96px;
+  left: 24px;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 233, 168, 0.14), rgba(255, 233, 168, 0.04) 60%);
+  border: 1px solid rgba(255, 233, 168, 0.4);
+  z-index: 12;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.joy-base::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 233, 168, 0.3);
+}
+
+.joy-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--primary-glow-top), var(--primary) 55%, var(--primary-glow-bot));
+  box-shadow: 0 0 18px rgba(255, 233, 168, 0.5);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ---------------- Action buttons ---------------- */
+
+.hud-actions {
+  position: absolute;
+  right: 20px;
+  bottom: 104px;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.act-btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--secondary);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--primary-glow-top), var(--primary));
+  box-shadow: 0 6px 18px rgba(255, 233, 168, 0.35);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.act-btn:active {
+  transform: scale(0.92);
+}
+
+.act-run {
+  width: 58px;
+  height: 58px;
+}
+
+.act-jump {
+  width: 68px;
+  height: 68px;
+  background: radial-gradient(circle at 35% 30%, var(--accent-glow-top), var(--accent));
+  box-shadow: 0 6px 18px rgba(242, 176, 90, 0.4);
+}
+
+/* ---------------- Mobile fullscreen fallback ---------------- */
+
+@media (max-width: 480px) {
+  .phone {
+    width: 100vw;
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+    padding: 6px;
+  }
+
+  .phone-screen {
+    border-radius: 0;
+  }
+
+  .phone-notch,
+  .phone-home {
+    display: none;
+  }
+}

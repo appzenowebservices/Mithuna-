@@ -1,0 +1,562 @@
+/* ============================================================
+   Mithuna Engine — design tokens + HUD overlay
+   Local copy of the "bold glass bento" language (Design-Guide.md).
+   Single source of truth for the palette lives HERE (:root), not in
+   paperclip/ui/src/index.css. Every component consumes these tokens.
+   ============================================================ */
+
+:root {
+  /* ---- Rich premium palette: ink navy + champagne + amber glow + aqua spark ---- */
+  --primary: #ffe9b8; /* warm champagne  */
+  --secondary: #16213a; /* deep ink navy   */
+  --accent: #f6ad3f; /* vibrant amber — hero accent  */
+  --accent-2: #5eead4; /* aqua mint — secondary spark for LIVE/voice  */
+  --accent-3: #8b9cf9; /* soft periwinkle — depth/aurora  */
+  --background: #070b14; /* rich ink-black base */
+  --chrome-top: #1b2542;
+  --chrome-mid: #111a30;
+  --chrome-bot: #162040;
+  --chrome-rim: #04060c;
+  --card: rgba(19, 27, 48, 0.68); /* rich navy glass */
+  --card-solid: #182238; /* solid control surface */
+  --card-deep: rgba(7, 11, 20, 0.7); /* deep inset surface */
+  --border: rgba(246, 173, 63, 0.2); /* warm-tinted border */
+  --border-cool: rgba(148, 163, 184, 0.18);
+  --muted: rgba(246, 173, 63, 0.08);
+  --muted-foreground: rgba(255, 233, 184, 0.66);
+  --foreground: #ffe9b8;
+
+  /* Juicy hero-button gradient stops */
+  --primary-glow-top: #fff7dd;
+  --accent-glow-top: #ffd896;
+  --primary-glow-bot: #d9a84e;
+  --accent-gradient: linear-gradient(135deg, #ffd896 0%, #f6ad3f 45%, #ff7a3d 100%);
+
+  /* ---- Vivid but premium status hues ---- */
+  --accent-green: #34d399;
+  --accent-yellow: #f6ad3f;
+  --accent-sky: #60a5fa;
+  --status-err: #fb7185;
+
+  /* ---- Legacy accent aliases (kept for JSX inline refs) ---- */
+  --accent-cyan: #5eead4;
+  --accent-magenta: #f6ad3f;
+  --hud-text: #fff3d6;
+  --hud-dim: rgba(255, 233, 184, 0.64);
+
+  /* ---- Motion ---- */
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--background);
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------- Scanlines & vignette (whisper-soft, cinematic) ---------------- */
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0.1;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 3px,
+    rgba(0, 0, 0, 0.14) 4px
+  );
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.38);
+}
+
+/* ---------------- HUD status bar ---------------- */
+
+.hud-status {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  font-weight: 500;
+  color: var(--hud-text);
+  background:
+    linear-gradient(90deg, rgba(246, 173, 63, 0.1), transparent 25%, transparent 75%, rgba(94, 234, 212, 0.08)),
+    rgba(19, 27, 48, 0.62);
+  border: 1px solid rgba(246, 173, 63, 0.22);
+  border-radius: 16px;
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(246, 173, 63, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+.hud-brand {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+
+.hud-brand .hud-ver {
+  color: var(--hud-dim);
+  font-weight: 700;
+}
+
+.hud-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.hud-pulse {
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.hud-bars {
+  letter-spacing: 1px;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+.hud-voice {
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border: 1px solid;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease-out;
+}
+
+.hud-voice.ok {
+  color: var(--accent-2);
+  border-color: rgba(94, 234, 212, 0.5);
+  background: rgba(94, 234, 212, 0.08);
+}
+
+.hud-voice.warn {
+  color: var(--accent-yellow);
+  border-color: rgba(246, 173, 63, 0.55);
+  background: rgba(246, 173, 63, 0.08);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.hud-voice.err {
+  color: var(--status-err);
+  border-color: rgba(224, 128, 128, 0.4);
+}
+
+.hud-voice.dim {
+  color: var(--hud-dim);
+  border-color: var(--border);
+}
+
+/* ---------------- Caption / voice line strip ---------------- */
+
+.hud-caption {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 28px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 10px 16px;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  font-weight: 500;
+  color: var(--hud-text);
+  background: rgba(17, 24, 39, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 14px;
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.hud-mute {
+  pointer-events: auto;
+  flex: none;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  padding: 6px 14px;
+  color: var(--secondary);
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease-out;
+}
+
+.hud-mute:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 20px rgba(226, 167, 93, 0.35);
+}
+
+.hud-caption-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hud-caption-line b {
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.hud-caption-sep {
+  color: var(--hud-dim);
+}
+
+.hud-caption-idle {
+  color: var(--hud-dim);
+  font-style: italic;
+}
+
+/* ---------------- Telemetry strip ---------------- */
+
+.hud-stats {
+  position: absolute;
+  top: 68px;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  font-weight: 500;
+  color: var(--hud-dim);
+  pointer-events: none;
+}
+
+.hud-stats .stat {
+  padding: 5px 12px;
+  background: rgba(17, 24, 39, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.hud-stats b {
+  color: var(--primary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------- Corner reticles ---------------- */
+
+.corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.corner.tl {
+  top: 14px;
+  left: 14px;
+  border-top: 1.5px solid var(--accent);
+  border-left: 1.5px solid var(--accent);
+}
+
+.corner.tr {
+  top: 14px;
+  right: 14px;
+  border-top: 1.5px solid var(--accent);
+  border-right: 1.5px solid var(--accent);
+}
+
+.corner.bl {
+  bottom: 14px;
+  left: 14px;
+  border-bottom: 1.5px solid var(--accent);
+  border-left: 1.5px solid var(--accent);
+}
+
+.corner.br {
+  bottom: 14px;
+  right: 14px;
+  border-bottom: 1.5px solid var(--accent);
+  border-right: 1.5px solid var(--accent);
+}
+
+/* ---------------- Boot text ---------------- */
+
+.hud-boot {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 10px;
+  z-index: 10;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.42);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- Camera dock (hovering over 3D view, right edge) ---------------- */
+
+.cam-dock {
+  position: absolute;
+  top: 110px;
+  right: 24px;
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 184px;
+  pointer-events: auto;
+}
+
+.cam-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 40%),
+    rgba(19, 27, 48, 0.68);
+  border: 1px solid rgba(246, 173, 63, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(246, 173, 63, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 14px;
+  transition: all 0.2s ease-out;
+}
+
+.cam-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.cam-label {
+  color: var(--hud-text);
+}
+
+.cam-count {
+  color: var(--hud-dim);
+  font-weight: 700;
+}
+
+.cam-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cam-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  color: var(--hud-text);
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease-out;
+}
+
+.cam-btn:hover {
+  background: rgba(148, 163, 184, 0.14);
+  border-color: rgba(226, 167, 93, 0.4);
+  transform: scale(1.02);
+}
+
+.cam-btn.on {
+  color: #1a0e02;
+  background: var(--accent-gradient);
+  border-color: rgba(246, 173, 63, 0.8);
+  box-shadow: 0 4px 20px rgba(246, 173, 63, 0.45);
+  font-weight: 600;
+}
+
+.cam-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-err);
+  flex: none;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.cam-btn.on .cam-dot {
+  background: var(--secondary);
+  box-shadow: none;
+}
+
+.cam-empty {
+  font-size: 9px;
+  letter-spacing: 0.6px;
+  color: var(--hud-dim);
+  font-style: italic;
+  padding: 6px 2px;
+}
+
+.cam-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.cam-status-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  font-weight: 800;
+  color: var(--hud-dim);
+}
+
+.cam-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+  flex: none;
+}
+
+.cam-status-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- Floating HUD (lightweight glass, contextual) ---------------- */
+
+.hud-float {
+  position: absolute;
+  z-index: 9;
+  pointer-events: auto;
+}
+
+.cam-float {
+  top: 88px;
+  right: 18px;
+  opacity: 0.55;
+  transition: opacity 0.18s ease;
+}
+
+.cam-float:hover,
+.cam-float.live {
+  opacity: 1;
+}
+
+.cam-float .cam-dock {
+  position: static;
+}
+
+.hud-caption {
+  transition: opacity 0.2s ease;
+}
+
+.hud-caption.idle {
+  opacity: 0.55;
+}
+
+.hud-caption.active {
+  opacity: 1;
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+.hud-boot {
+  animation: boot-fade 0.6s ease;
+}
+
+@keyframes boot-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------------- Animations ---------------- */
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}

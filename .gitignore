@@ -1,0 +1,92 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Build output
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime / env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Vite cache
+.vite/
+.vite-inspect/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Editors / IDEs
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*~
+.project
+.classpath
+.c9/
+*.launch
+*.sublime-workspace
+
+# TypeScript / JS tooling
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.next/
+.nuxt/
+.turbo/
+
+# Testing / coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Temp
+tmp/
+temp/
+.tmp/
+
+# Blender backups (keep .blend source files)
+*.blend1
+*.blend2
+*.blend3
+*.blend4
+*.blend5
+*.blend6
+*.blend7
+*.blend8
+*.blend9
+*.blend~
+
+# Generated voice runtime assets (vendored from node_modules by scripts/copy-voice-assets.mjs)
+public/vad/
