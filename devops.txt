@@ -1,0 +1,84 @@
+ssh-keygen -R "95.135.166.152" //----to clear the old host key for that IP address:
+
+
+ssh-keygen -t ed25519
+
+(Verify: Run cat ~/.ssh/id_ed25519.pub to view and copy your public key.)
+
+sudo mkdir -p /root/.ssh
+sudo chmod 700 /root/.ssh //--- only the root user can read, write, or access it
+sudo nano /root/.ssh/authorized_keys //--- paste thye local machine ssh
+
+sudo chmod 600 /root/.ssh/authorized_keys  
+sudo nano /etc/ssh/sshd_config //---(Find PermitRootLogin, change it to PermitRootLogin prohibit-password, save)
+sudo systemctl restart ssh
+
+
+=================== HARDENING VPS ===========================================
+ssh-keygen -t ed25519
+type $env:USERPROFILE\.ssh\id_ed25519.pub
+
+ssh root@187.77.99.4
+mkdir -p ~/.ssh
+nano ~/.ssh/authorized_keys
+
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+
+sudo nano /etc/ssh/sshd_config
+PasswordAuthentication no
+sudo systemctl restart ssh
+
+adduser devops //----add users 
+cut -d: -f1 /etc/passwd //----list users 
+sudo userdel -r devops //----delete users 
+usermod -aG sudo devops //---- add the devops user to the sudo group
+install -d -m 700 -o devops -g devops /home/devops/.ssh //-- create the configuration folder:
+
+sudo nano /home/devops/.ssh/authorized_keys
+
+ssh devops@187.77.99.4
+
+sudo nano /etc/ssh/sshd_config
+PermitRootLogin prohibit-password
+sudo systemctl restart ssh
+
+
+=================== DOCKER  ===========================================
+sudo apt update && sudo apt install ca-certificates curl gnupg -y
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+sudo usermod -aG docker $USER
+
+============================
+docker network create web
+docker compose up -d
+docker compose up -d --build
+docker compose down --remove-orphans && docker compose up -d --build
+dig A apnidesidukaan.com +short
+docker exec -w /etc/caddy caddy caddy reload --config /etc/caddy/Caddyfile
+
+============================
+
+
+
+=================== FIREWALL ===========================================
+sudo apt update
+sudo apt install ufw -y
+sudo ufw allow OpenSSH
+sudo ufw allow 2222/tcp
+sudo ufw allow 3000
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw enable
+sudo ufw status
+
+
