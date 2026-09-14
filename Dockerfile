@@ -10,7 +10,9 @@ RUN npm run build
 FROM nginx:alpine AS runner
 # envsubst template -> /etc/nginx/conf.d/default.conf (handled by the
 # stock nginx entrypoint). PAPERCLIP_UPSTREAM / HERMES_UPSTREAM come
-# from compose environment, defaults point at the sibling containers.
+# from compose environment, defaults keep nginx starting when env or
+# backends are missing (requests then 502 instead of emerg crash-loop).
+ENV PAPERCLIP_UPSTREAM="appzeno-agent-panel:3100" HERMES_UPSTREAM="hermes:8765"
 COPY nginx.default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 3000
