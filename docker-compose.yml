@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
     environment:
       # host:port of the sibling backend containers on the `web` network
-      PAPERCLIP_UPSTREAM: "paperclip:3100"
+      PAPERCLIP_UPSTREAM: "appzeno-agent-panel:3100"
       HERMES_UPSTREAM: "hermes:8765"
     networks:
       - web
